@@ -14,7 +14,7 @@ var retweet = function()
     //create an object of parameters for the search tweet function
     var parameters = 
         {
-            q: "#fashion, #fashion, #vogue, #blog",
+            q: "#fashion, #lifestyle, #fashionblogger, #vogue, #blog, #blogger, #makeup",
             result_type: "recent",
             lang:"en"
         }
@@ -41,7 +41,7 @@ var retweet = function()
                 //if there was an error while retweeting
                 if(error)
                 {
-                    console.log("Something went wrong while RETWEETING")
+                    console.log("Something went wrong while RETWEETING");
                 }
             });
             }
@@ -57,7 +57,7 @@ var favoriteTweet = function()
 {
     var parameters = 
         {
-            q: "#fashion, #fashion, #vogue, #blog",
+            q: "#fashion, #lifestyle, #fashionblogger, #vogue, #blog, #blogger #makeup",
             result_type: "recent",
             lang:"en"
         }
@@ -70,9 +70,9 @@ var favoriteTweet = function()
         var randomTweet = randTweet(tweet);
         
         //if random tweet exists
-        if(!typeof randomTweet != "undefined")
+        if(typeof randomTweet != "undefined")
         {
-            Twitter.post("favorites/create", {id:randomTweet.id_str}, function(error, response)
+            Twitter.post("favorites/create", {id: randomTweet.id_str}, function(error, response)
                          {
                 //if error while response
                 if(error)
@@ -90,7 +90,7 @@ var favoriteTweet = function()
 }
 
 //grab favorite tweet when program starts
-favoriteTweet();
+randTweet();
 
 //set a favorite every 10 mins;
 setInterval(favoriteTweet, 600000);
@@ -98,7 +98,7 @@ setInterval(favoriteTweet, 600000);
 //function to grab random tweet
 function randTweet(arr)
 {
-    var index = Math.floor(Math.random() * arr.length);
+    var index = Math.floor(Math.random()*arr.length);
     return arr[index];
 }
 
@@ -106,4 +106,43 @@ function randTweet(arr)
 retweet();
 setInterval(retweet, 300000);
 
-//follow partmb
+//set up Steaming API for user
+var steam = Twitter.stream("user");
+
+//when someone follows
+stream.on("follow", followed)
+{
+    //trigger callback
+    function follow()
+    {
+        console.log("follow event is running");
+        
+        //get the user name
+        var name = event.source.name,
+            screenName = event.source.screen_name;
+        
+        //function that replies to who followed
+        tweetNow("@" + screenName + " Thank you  for the follow"); 
+    }
+    
+    function tweetNow(tweetText)
+    {
+        var tweet
+        {
+            status:tweetText
+        }
+        
+        Twitter.post("statuses/update", tweet, function(error, data, response)
+                     {
+            if(error)
+            {
+                console.log("error in replying")
+            }
+            
+            else
+            {
+                console.log("shown sucessfully");
+            }
+        });
+    }
+}
